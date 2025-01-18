@@ -14,4 +14,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DeveloperStore.Sales.Application\DeveloperStore.Sales.Application.csproj" />
+    <ProjectReference Include="..\DeveloperStore.Sales.Infra.IoC\DeveloperStore.Sales.Infra.IoC.csproj" />
+  </ItemGroup>
+
 </Project>

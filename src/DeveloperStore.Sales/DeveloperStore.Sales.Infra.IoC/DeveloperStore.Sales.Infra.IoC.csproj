@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeveloperStore.Sales.Application\DeveloperStore.Sales.Application.csproj" />
+    <ProjectReference Include="..\DeveloperStore.Sales.Infra.Data\DeveloperStore.Sales.Infra.Data.csproj" />
+  </ItemGroup>
+
 </Project>
