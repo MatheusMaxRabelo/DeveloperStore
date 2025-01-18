@@ -1,0 +1,37 @@
+services:
+  rabbitMq:
+    image: rabbitmq:management
+    container_name: "DeveloperStore-RabbitMQ"
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - DeveloperStore-RabbitMQ-Volume:/var/lib/rabbitmq/mnesia/
+    networks:
+      - DeveloperStore
+
+  developerStoreDb:
+    container_name: DeveloperStore-Db
+    image: postgres:latest
+    volumes:
+      - DeveloperStore:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: P0st@123!pr0
+      POSTGRES_DB: DeveloperStore-Products
+    ports:
+      - "5003:5432"
+    networks:
+      - DeveloperStore
+
+
+volumes:
+  DeveloperStore-RabbitMQ-Volume:
+    name: DeveloperStore-RabbitMQ-Volume
+  DeveloperStore:
+    name: DeveloperStore
+
+networks:
+  DeveloperStore:
+    name: DeveloperStore
