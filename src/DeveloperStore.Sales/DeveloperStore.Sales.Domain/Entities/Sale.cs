@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DeveloperStore.Sales.Domain.Entities;
 
-public class Sales
+public class Sale
 {
     public int Id { get; set; }
     public DateTime SalesDate { get; set; }
     public int CustomerId { get; set; }
-    public double TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
     public string Branch { get; set; } = null!;
     public List<Item> Items { get; set; } = null!;
     public bool IsCancelled { get; set; }
