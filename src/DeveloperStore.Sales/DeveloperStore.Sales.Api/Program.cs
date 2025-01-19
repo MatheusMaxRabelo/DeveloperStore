@@ -7,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbConnection(builder.Configuration);
 builder.Services.AddDependencyInjection(builder.Configuration);
+builder.Services.ConfigMediatR();
+builder.Services.AddMapperConfig();
+
+builder.Services.AddLogging(loggingbuilder =>
+{
+    loggingbuilder.ClearProviders();
+    loggingbuilder.AddConsole();
+});
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

@@ -7,11 +7,11 @@ public class Item
     public int Id { get; set; }
     public int ItemId { get; set; }
     public int SalesId { get; set; }
+    public Sale Sale { get; set; }
     public int Quantity { get; set; }
-    public double TotalAmount { get; set; }
-    public double Price { get; set; }
-    public double DiscountAmount { get; set; } = 0d;
-    public string DiscountPercent { get; set; } = string.Empty;
+    public decimal TotalAmount { get; set; }
+    public decimal UnitPrice { get; set; }
+    public decimal Discount { get; set; } = 0m;
     public bool IsCancelled { get; set; }
     [NotMapped]
     public IList<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
