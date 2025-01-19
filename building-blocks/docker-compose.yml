@@ -19,7 +19,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: P0st@123!pr0
-      POSTGRES_DB: DeveloperStore-Products
+      POSTGRES_DB: DeveloperStore-Sales
     ports:
       - "5003:5432"
     networks:
