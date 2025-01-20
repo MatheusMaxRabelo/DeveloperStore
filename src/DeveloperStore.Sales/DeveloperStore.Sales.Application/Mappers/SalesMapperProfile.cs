@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeveloperStore.Sales.Application.Commands.Sales.Create;
+using DeveloperStore.Sales.Application.Commands.Sales.Update;
 using DeveloperStore.Sales.Application.DTOs;
 using DeveloperStore.Sales.Application.Models;
 using DeveloperStore.Sales.Domain.Entities;
@@ -19,8 +20,19 @@ public class SalesMapperProfile : Profile
             .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Products))
             .ReverseMap();
+        
+        CreateMap<UpdateSaleCommand, Sale>(MemberList.Destination)
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Products))
+            .ReverseMap();
 
         CreateMap<CreateSaleCommand, SalesDto>(MemberList.Destination)
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
+            .ReverseMap();
+
+        CreateMap<UpdateSaleCommand, SalesDto>(MemberList.Destination)
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.CustomerId))
             .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
             .ReverseMap();
@@ -29,9 +41,19 @@ public class SalesMapperProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ProductId))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ReverseMap();
+       
+        CreateMap<UpdateProductRequest, ProductDto>(MemberList.Destination)
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+            .ReverseMap();
 
         CreateMap<ProductRequest, Item>(MemberList.Destination)
             .ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.ProductId))
+            .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+            .ReverseMap();
+
+        CreateMap<UpdateProductRequest, Item>(MemberList.Destination)
+            .ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ReverseMap();
         #endregion

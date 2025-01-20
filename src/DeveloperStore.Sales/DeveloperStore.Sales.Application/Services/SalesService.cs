@@ -130,24 +130,69 @@ public class SalesService : ISalesService
         return result;
     }
 
-    public async Task UpdateSaleAsync(int id, Sale sale)
+    public async Task<SalesModel> UpdateSaleAsync(int id, Sale sale)
     {
         var existingSale = await _salesRepository.GetSaleByIdAsync(id);
-        if (existingSale == null) throw new KeyNotFoundException("Sale not found");
 
-        existingSale.SalesDate = sale.SalesDate;
+        if (existingSale == null)
+        {
+            throw new BusinessException(new ErrorResponse()
+            {
+                Type = Errors.ResourceNotFoundType,
+                Error = Errors.SaleNotFoundMessage,
+                Detail = string.Format(Errors.SaleNotFoundDetail, id)
+            });
+        }
+
+        var tasks = sale.Items.Select(async item =>
+        {
+            try
+            {
+                var product = await _productApi.GetProductAsync(item.ItemId);
+
+                _mapper.Map(product, item);
+
+                decimal discountedPrice = await CalculateDiscountedPriceAsync(item);
+                _logger.LogInformation($"Quantity: {item.Quantity}, Total Price: {discountedPrice:C}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError($"Error for Quantity {item.Quantity}: {ex.Message}");
+            }
+        });
+        await Task.WhenAll(tasks);
+
+        sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
+
+        existingSale.SalesDate = sale.SalesDate.ToUniversalTime();
         existingSale.CustomerId = sale.CustomerId;
         existingSale.Branch = sale.Branch;
+        existingSale.Items = sale.Items;
         existingSale.TotalAmount = sale.TotalAmount;
         existingSale.IsCancelled = sale.IsCancelled;
 
         await _salesRepository.UpdateAsync(existingSale);
+
+        var result = _mapper.Map<SalesModel>(existingSale);
+
+        await FulfillCustomerData(result);
+
+        return result;
     }
 
     public async Task DeleteSaleAsync(int id)
     {
         var sale = await _salesRepository.GetSaleByIdAsync(id);
-        if (sale == null) throw new KeyNotFoundException("Sale not found");
+
+        if (sale == null)
+        {
+            throw new BusinessException(new ErrorResponse()
+            {
+                Type = Errors.ResourceNotFoundType,
+                Error = Errors.SaleNotFoundMessage,
+                Detail = string.Format(Errors.SaleNotFoundDetail, id)
+            });
+        }
 
         await _salesRepository.DeleteAsync(id);
     }

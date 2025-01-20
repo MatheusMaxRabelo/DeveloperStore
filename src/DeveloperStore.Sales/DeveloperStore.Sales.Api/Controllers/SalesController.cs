@@ -1,4 +1,5 @@
 ﻿using DeveloperStore.Sales.Application.Commands.Sales.Create;
+using DeveloperStore.Sales.Application.Commands.Sales.Update;
 using DeveloperStore.Sales.Application.DTOs;
 using DeveloperStore.Sales.Application.Queries.Sales.GetSaleById;
 using DeveloperStore.Sales.Application.Queries.Sales.GetSales;
@@ -55,11 +56,30 @@ public class SalesController(IMediator mediator) : ControllerBase
     /// <returns>New sale data</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SalesDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SalesDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> AddMemberAsync([FromBody] CreateSaleCommand request)
     {
         var result = await mediator.Send(request);
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Update a sale
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="request"></param>
+    /// <returns>Requested sale ID</returns>
+    [HttpPut]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SalesDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+    public async Task<IActionResult> UpdateMemberAsync([FromRoute] int id, [FromBody] UpdateSaleCommand request)
+    {
+        request.Id = id;
+        var result = await mediator.Send(request);
+
+        return Ok(result);
+
     }
 }
