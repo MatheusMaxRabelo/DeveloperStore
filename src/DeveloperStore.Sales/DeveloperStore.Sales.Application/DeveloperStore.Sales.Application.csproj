@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\Sales\Delete\" />
-    <Folder Include="Commands\Sales\Update\" />
   </ItemGroup>
 
   <ItemGroup>
