@@ -102,7 +102,12 @@ public class SalesService : ISalesService
 
         await _salesRepository.AddAsync(sale);
 
-        return _mapper.Map<SalesModel>(sale);
+        var result = _mapper.Map<SalesModel>(sale);
+
+        await FulfillProductData(result, string.Empty);
+        await FulfillCustomerData(result);
+
+        return result;
     }
 
     public async Task UpdateSaleAsync(int id, Sale sale)
