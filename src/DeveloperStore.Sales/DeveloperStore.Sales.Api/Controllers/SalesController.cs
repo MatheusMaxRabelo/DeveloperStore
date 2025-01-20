@@ -1,5 +1,6 @@
 ﻿using DeveloperStore.Sales.Application.Commands.Sales.Create;
 using DeveloperStore.Sales.Application.DTOs;
+using DeveloperStore.Sales.Application.Queries.Sales.GetSaleById;
 using DeveloperStore.Sales.Application.Queries.Sales.GetSales;
 using DeveloperStore.Sales.Application.Response;
 using MediatR;
@@ -27,6 +28,22 @@ public class SalesController(IMediator mediator) : ControllerBase
         }
 
        var result = await mediator.Send(request);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get a specificf sale based on id.
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <returns>A list of Sales</returns>
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<List<SalesDto>>))]
+    public async Task<IActionResult> GetMembersAsync(int id)
+    {
+        var request = new GetSaleByIdQuery(id);
+
+        var result = await mediator.Send(request);
 
         return Ok(result);
     }

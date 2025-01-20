@@ -53,7 +53,7 @@ public class SalesMapperProfile : Profile
                     dest.Customer = new();
                 }
 
-                dest.Id = src.CustomerId;
+                dest.Customer.Id = src.CustomerId;
             })
             .ReverseMap();
 
