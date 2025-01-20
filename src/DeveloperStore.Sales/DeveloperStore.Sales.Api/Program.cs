@@ -1,10 +1,16 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using DeveloperStore.Sales.Infra.IoC.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+});
 builder.Services.AddDbConnection(builder.Configuration);
 builder.Services.AddDependencyInjection(builder.Configuration);
 builder.Services.ConfigMediatR();

@@ -10,7 +10,7 @@ public class Sale
     public int CustomerId { get; set; }
     public decimal TotalAmount { get; set; }
     public string Branch { get; set; } = null!;
-    public List<Item> Items { get; set; } = null!;
+    public IList<Item> Items { get; set; }
     public bool IsCancelled { get; set; }
     [NotMapped]
     public IList<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();

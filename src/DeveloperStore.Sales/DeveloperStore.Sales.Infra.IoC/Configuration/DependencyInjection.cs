@@ -1,5 +1,6 @@
 ﻿using DeveloperStore.Sales.Application.Commands.Sales.Create;
 using DeveloperStore.Sales.Application.Services;
+using DeveloperStore.Sales.Application.Services.Refit;
 using DeveloperStore.Sales.Domain.Interfaces.Repositories;
 using DeveloperStore.Sales.Domain.Interfaces.Services;
 using DeveloperStore.Sales.Domain.RabbitMQ;
@@ -9,6 +10,7 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
+using Refit;
 
 namespace DeveloperStore.Sales.Infra.IoC.Configuration;
 
@@ -20,7 +22,15 @@ public static class DependencyInjection
         AddRepositoriesDependencyInjection(services);
         RabbitMQConfig(services, configuration);
         AddValidations(services);
+        RefitConfig(services);
         services.AddDbContext<SalesContext>();
+    }
+
+    private static void RefitConfig(IServiceCollection services)
+    {
+        services.AddRefitClient<ICustomerApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://fakestoreapi.com/"));
+        services.AddRefitClient<IProductApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://fakestoreapi.com/"));
+
     }
 
     private static void AddValidations(IServiceCollection services)
