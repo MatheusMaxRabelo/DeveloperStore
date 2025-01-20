@@ -19,8 +19,6 @@ public class SalesService : ISalesService
 
     public const int MAX_QUANTITY = 20;
     public const int MIN_DISCOUNT_QUANTITY = 4;
-    public const string PAGE_NUMBER_KEY = "_page"; 
-    public const string PAGE_SIZE_KEY = "_size";
 
     public SalesService(ISalesRepository salesRepository, ILogger<SalesService> logger, ICustomerApi customerApi, IProductApi productApi, IMapper mapper)
     {
@@ -33,20 +31,20 @@ public class SalesService : ISalesService
 
     public async Task<List<SalesModel>> GetSalesAsync(Dictionary<string, string> filters)
     {
-        filters.TryGetValue(PAGE_NUMBER_KEY, out string? pageNumberValue);
-        filters.TryGetValue(PAGE_SIZE_KEY, out string? pageSizeValue);
+        filters.TryGetValue(Constants.Filter.PAGE_NUMBER_KEY, out string? pageNumberValue);
+        filters.TryGetValue(Constants.Filter.PAGE_SIZE_KEY, out string? pageSizeValue);
 
         var pageNumber = pageNumberValue is null ? 1 : int.Parse(pageNumberValue);
         var pageSize = pageSizeValue is null ? 10 : int.Parse(pageSizeValue);
 
         if (!string.IsNullOrWhiteSpace(pageNumberValue))
         {
-            filters.Remove(PAGE_NUMBER_KEY);
+            filters.Remove(Constants.Filter.PAGE_NUMBER_KEY);
         }
 
         if (!string.IsNullOrWhiteSpace(pageSizeValue))
         {
-            filters.Remove(PAGE_SIZE_KEY);
+            filters.Remove(Constants.Filter.PAGE_SIZE_KEY);
         }
 
         var (sales, totalamount) = await _salesRepository.GetSalesAsync(pageNumber, pageSize, filters);
@@ -69,7 +67,11 @@ public class SalesService : ISalesService
         var sale = await _salesRepository.GetSaleByIdAsync(id);
         if (sale == null) throw new KeyNotFoundException("Sale not found");
 
-        return _mapper.Map<SalesModel>(sale);
+        var result = _mapper.Map<SalesModel>(sale);
+        await FulfillProductData(result, string.Empty);
+        await FulfillCustomerData(result);
+
+        return result;
     }
 
     public async Task<SalesModel> CreateSaleAsync(Sale sale)
@@ -100,7 +102,12 @@ public class SalesService : ISalesService
 
         await _salesRepository.AddAsync(sale);
 
-        return _mapper.Map<SalesModel>(sale);
+        var result = _mapper.Map<SalesModel>(sale);
+
+        await FulfillProductData(result, string.Empty);
+        await FulfillCustomerData(result);
+
+        return result;
     }
 
     public async Task UpdateSaleAsync(int id, Sale sale)
