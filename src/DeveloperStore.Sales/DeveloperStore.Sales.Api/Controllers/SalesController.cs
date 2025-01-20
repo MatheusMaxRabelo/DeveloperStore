@@ -26,9 +26,9 @@ public class SalesController(IMediator mediator) : ControllerBase
             request.Filters = filters.ToDictionary();
         }
 
-        await mediator.Send(request);
+       var result = await mediator.Send(request);
 
-        return Ok();
+        return Ok(result);
     }
 
     /// <summary>

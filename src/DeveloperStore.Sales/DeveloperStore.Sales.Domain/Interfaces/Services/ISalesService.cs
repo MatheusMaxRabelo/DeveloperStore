@@ -1,12 +1,13 @@
 ﻿using DeveloperStore.Sales.Domain.Entities;
+using DeveloperStore.Sales.Domain.Models;
 
 namespace DeveloperStore.Sales.Domain.Interfaces.Services;
 
 public interface ISalesService
 {
-    Task<List<Sale>> GetSalesAsync(int pageNumber, int pageSize);
-    Task<Sale> GetSaleByIdAsync(int id);
-    Task<Sale> CreateSaleAsync(Sale sale);
+    Task<List<SalesModel>> GetSalesAsync(Dictionary<string, string> filter);
+    Task<SalesModel> GetSaleByIdAsync(int id);
+    Task<SalesModel> CreateSaleAsync(Sale sale);
     Task UpdateSaleAsync(int id, Sale sale);
     Task DeleteSaleAsync(int id);
 }

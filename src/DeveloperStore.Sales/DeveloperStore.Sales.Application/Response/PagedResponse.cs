@@ -9,6 +9,7 @@ public class PagedResponse<T>
 
     public PagedResponse(T data, int? currentPage, int? pageSize, int? totalItems)
     {
+        Data = data;
         CurrentPage = currentPage;
         TotalPages = (int)Math.Ceiling(TotalItems ?? 0 / (double) pageSize); ;
         TotalItems = totalItems;

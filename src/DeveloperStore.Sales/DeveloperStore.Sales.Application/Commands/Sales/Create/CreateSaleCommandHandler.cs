@@ -16,7 +16,6 @@ public class CreateSaleCommandHandler(IMapper mapper, ILogger<CreateSaleCommandH
     {
         logger.LogInformation("Creating sale!");
 
-        var dto = mapper.Map<SalesDto>(request);
         var sale = mapper.Map<Sale>(request);
         sale.SalesDate = DateTime.UtcNow;
 
