@@ -61,6 +61,24 @@ namespace DeveloperStore.Sales.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customer with Id {0} was not found.
+        /// </summary>
+        internal static string CustomerNotFoundDetail {
+            get {
+                return ResourceManager.GetString("CustomerNotFoundDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer not found.
+        /// </summary>
+        internal static string CustomerNotFoundMessage {
+            get {
+                return ResourceManager.GetString("CustomerNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} must be less than or equal to {1}..
         /// </summary>
         internal static string LessThanOrEqualValidatorDetail {
@@ -111,6 +129,24 @@ namespace DeveloperStore.Sales.Application.Resources {
         internal static string NoItemsErrorType {
             get {
                 return ResourceManager.GetString("NoItemsErrorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product with Id {0} was not found.
+        /// </summary>
+        internal static string ProductNotFoundDetail {
+            get {
+                return ResourceManager.GetString("ProductNotFoundDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product not found.
+        /// </summary>
+        internal static string ProductNotFoundMessage {
+            get {
+                return ResourceManager.GetString("ProductNotFoundMessage", resourceCulture);
             }
         }
         
