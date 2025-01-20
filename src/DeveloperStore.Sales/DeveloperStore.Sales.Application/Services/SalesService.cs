@@ -118,12 +118,14 @@ public class SalesService : ISalesService
 
         sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
 
-        await _salesRepository.AddAsync(sale);
-
         var result = _mapper.Map<SalesModel>(sale);
 
-        await FulfillProductData(result, string.Empty);
+        await FulfillProductData(result, "creating");
         await FulfillCustomerData(result);
+
+        sale = _mapper.Map<Sale>(sale);
+
+        await _salesRepository.AddAsync(sale);
 
         return result;
     }
@@ -227,6 +229,16 @@ public class SalesService : ISalesService
         {
             var product = await _productApi.GetProductAsync(item.Id);
 
+            if (product is null)
+            {
+                throw new BusinessException(new ErrorResponse()
+                {
+                    Type = Errors.ResourceNotFoundType,
+                    Error = Errors.ProductNotFoundMessage,
+                    Detail = string.Format(Errors.ProductNotFoundDetail, item.Id)
+                });
+            }
+
             ProcessProduct(item, product, action);
 
             return product;
@@ -238,6 +250,16 @@ public class SalesService : ISalesService
     private async Task FulfillCustomerData(SalesModel sale)
     {
         var customer = await _customerApi.GetCustomerAsync(sale.Customer.Id);
+
+        if(customer is null)
+        {
+            throw new BusinessException(new ErrorResponse()
+            {
+                Type = Errors.ResourceNotFoundType,
+                Error = Errors.CustomerNotFoundMessage,
+                Detail = string.Format(Errors.CustomerNotFoundDetail, sale.Customer.Id)
+            });
+        }
 
         ProcessCustomer(sale.Customer, customer);
     }
