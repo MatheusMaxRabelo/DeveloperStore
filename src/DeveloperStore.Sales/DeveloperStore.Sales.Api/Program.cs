@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DeveloperStore.Sales.Api.Middlewares;
 using DeveloperStore.Sales.Infra.IoC.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,8 @@ builder.Services.AddLogging(loggingbuilder =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseGlobalExceptionMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

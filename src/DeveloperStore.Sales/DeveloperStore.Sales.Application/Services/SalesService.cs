@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using DeveloperStore.Sales.Application.Exceptions;
 using DeveloperStore.Sales.Application.Models;
+using DeveloperStore.Sales.Application.Resources;
+using DeveloperStore.Sales.Application.Response;
 using DeveloperStore.Sales.Application.Services.Refit;
 using DeveloperStore.Sales.Domain.Entities;
 using DeveloperStore.Sales.Domain.Interfaces.Repositories;
@@ -65,7 +68,16 @@ public class SalesService : ISalesService
     public async Task<SalesModel> GetSaleByIdAsync(int id)
     {
         var sale = await _salesRepository.GetSaleByIdAsync(id);
-        if (sale == null) throw new KeyNotFoundException("Sale not found");
+
+        if (sale == null)
+        {
+            throw new BusinessException(new ErrorResponse()
+            {
+                Type = Errors.ResourceNotFoundType,
+                Error = Errors.SaleNotFoundMessage,
+                Detail = string.Format(Errors.SaleNotFoundDetail, id)
+            });
+        }
 
         var result = _mapper.Map<SalesModel>(sale);
         await FulfillProductData(result, string.Empty);
@@ -77,8 +89,14 @@ public class SalesService : ISalesService
     public async Task<SalesModel> CreateSaleAsync(Sale sale)
     {
         if (sale.Items == null || !sale.Items.Any())
-            throw new ArgumentException("A sale must have at least one item");
-
+        {
+            throw new BusinessException(new ErrorResponse
+            {
+                Type = Errors.NoItemsErrorType,
+                Error = Errors.NoItemsErrorMessage,
+                Detail = Errors.NoItemsErrorDetail
+            });
+        }
         var tasks = sale.Items.Select(async item =>
         {
             try
@@ -138,7 +156,12 @@ public class SalesService : ISalesService
         {
             if (item.Quantity > MAX_QUANTITY)
             {
-                throw new InvalidOperationException($"Cannot purchase more than {MAX_QUANTITY} identical items.");
+                throw new BusinessException(new ErrorResponse()
+                {
+                    Type = Errors.LessThanOrEqualValidatorType,
+                    Error = string.Format(Errors.LessThanOrEqualValidatorMessage, $"Product : {item.ItemId}. Property : Quantity"),
+                    Detail = Errors.LessThanOrEqualValidatorDetail
+                });
             }
 
             if (IsDiscountApplicable(item.Quantity))
