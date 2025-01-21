@@ -1,4 +1,4 @@
-[Back to README](../README.md)
+[Back to README](../readme.md)
 
 
 ### Authentication
@@ -22,5 +22,5 @@
 <br/>
 <div style="display: flex; justify-content: space-between;">
   <a href="./users-api.md">Previous: Users API</a>
-  <a href="./project-structure.md">Next: Project Structure</a>
+  <a href="./sales-api.md">Next: Sales API</a>
 </div>
