@@ -114,7 +114,7 @@ http://localhost:5233/api
 **Endpoint**: `GET /sales/{id}`  
 **Description**: Retrieves a specific sale record by its ID.  
 **Example**:  
-`GET /sales/8`  
+`GET /sales/4`  
 **Response** (JSON):
 ```json
 {
@@ -145,19 +145,12 @@ http://localhost:5233/api
 **Request Body** (JSON):
 ```json
 {
-   "id": "integer",
-    "salesDate": "datetime",
     "customerid": "integer",
-    "totalAmount": "numeric",
     "branch": "string",
     "products": [
         {
             "id": "integer",
-            "title": "string",
-            "unitPrice": "numeric",
             "quantity": "integer",
-            "discount": "numeric",
-            "totalAmount": "numeric",
             "isCancelled": "boolean"
         }
     ],
