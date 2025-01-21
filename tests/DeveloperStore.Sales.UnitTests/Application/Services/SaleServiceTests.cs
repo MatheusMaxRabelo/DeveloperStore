@@ -52,10 +52,8 @@ public class SalesServiceTests
                 new Sale { Id = 2, SalesDate = DateTime.Now, TotalAmount = 200, IsCancelled = false }
             };
 
-        // Mock repository call
         _salesRepository.GetSalesAsync(1, 10, filters).Returns((sales, 2));
 
-        // Mock API calls
         _productApi.GetProductAsync(Arg.Any<int>()).Returns(new Product { Id = 1, Title = "Product1", Price = 50 });
         _customerApi.GetCustomerAsync(Arg.Any<int>()).Returns(new Customer { Id = 1, Name = new Name { Firstname = "Customer1" } });
 
@@ -74,10 +72,8 @@ public class SalesServiceTests
         var saleId = 1;
         var sale = new Sale { Id = saleId, SalesDate = DateTime.Now, TotalAmount = 100, IsCancelled = false };
 
-        // Mock repository call
         _salesRepository.GetSaleByIdAsync(saleId).Returns(sale);
 
-        // Mock API calls
         _productApi.GetProductAsync(Arg.Any<int>()).Returns(new Product { Id = 1, Title = "Product1", Price = 50 });
         _customerApi.GetCustomerAsync(Arg.Any<int>()).Returns(new Customer { Id = 1, Name = new Name { Firstname = "Customer1" } });
 
@@ -165,7 +161,6 @@ public class SalesServiceTests
         var saleId = 1;
         var sale = new Sale { Id = saleId, IsCancelled = false };
 
-        // Mock repository calls
         _salesRepository.GetSaleByIdAsync(saleId).Returns(sale);
         _salesRepository.UpdateAsync(Arg.Any<Sale>()).Returns(Task.CompletedTask);
 
