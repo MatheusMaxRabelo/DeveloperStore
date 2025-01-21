@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeveloperStore.Sales.Application.Commands.Sales.Update;
 
-public class UpdateSaleCommandHandler(ISalesService salesService, IMapper mapper, ILogger<UpdateSaleCommandHandler> logger, IDomainEventService domainEventService)
+public class UpdateSaleCommandHandler(ISalesService salesService, IMapper mapper, IDomainEventService domainEventService)
     : IRequestHandler<UpdateSaleCommand, SalesDto>
 {
     public async Task<SalesDto> Handle(UpdateSaleCommand request, CancellationToken cancellationToken)

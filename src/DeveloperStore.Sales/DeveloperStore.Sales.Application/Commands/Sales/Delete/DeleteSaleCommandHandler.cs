@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeveloperStore.Sales.Application.Commands.Sales.Delete;
 
-public class DeleteSaleCommandHandler(ISalesService salesService, IMapper mapper, ILogger<DeleteSaleCommand> logger, IDomainEventService domainEventService)
+public class DeleteSaleCommandHandler(ISalesService salesService, IDomainEventService domainEventService)
     : IRequestHandler<DeleteSaleCommand, SimpleResponse>
 {
     public async Task<SimpleResponse> Handle(DeleteSaleCommand request, CancellationToken cancellationToken)
