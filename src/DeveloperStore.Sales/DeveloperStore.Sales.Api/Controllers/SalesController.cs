@@ -1,4 +1,5 @@
 ﻿using DeveloperStore.Sales.Application.Commands.Sales.Create;
+using DeveloperStore.Sales.Application.Commands.Sales.Delete;
 using DeveloperStore.Sales.Application.Commands.Sales.Update;
 using DeveloperStore.Sales.Application.DTOs;
 using DeveloperStore.Sales.Application.Queries.Sales.GetSaleById;
@@ -81,5 +82,21 @@ public class SalesController(IMediator mediator) : ControllerBase
 
         return Ok(result);
 
+    }
+
+    /// <summary>
+    /// Deletes an existing sale
+    /// </summary>
+    /// <returns>Success message</returns>
+    [HttpDelete]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SimpleResponse))]
+    public async Task<IActionResult> DeleteMemberAsync([FromRoute] int id)
+    {
+        DeleteSaleCommand request = new() { Id = id };
+
+        var result = await mediator.Send(request);
+
+        return Ok(result);
     }
 }
