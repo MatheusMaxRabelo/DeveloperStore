@@ -45,10 +45,12 @@ public class SaleRepository : ISalesRepository
             query = ApplyOrdering(query, orderBy);
         }
 
-        var totalCount = await query.CountAsync();
+        var totalCount = await query.Where(x => !x.IsCancelled).CountAsync();
+
         var items = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .Where(x => !x.IsCancelled)
             .ToListAsync();
 
         return (items, totalCount);
