@@ -1,4 +1,6 @@
 ﻿using DeveloperStore.Sales.Application.Commands.Sales.Create;
+using DeveloperStore.Sales.Application.Commands.Sales.Update;
+using DeveloperStore.Sales.Application.Interfaces;
 using DeveloperStore.Sales.Application.Services;
 using DeveloperStore.Sales.Application.Services.Refit;
 using DeveloperStore.Sales.Domain.Interfaces.Repositories;
@@ -37,6 +39,8 @@ public static class DependencyInjection
     {
         services.AddSingleton<IValidator<CreateSaleCommand>, CreateSaleValidation>();
         services.AddSingleton<IValidator<ProductRequest>, ProductRequestValidator>();
+        services.AddSingleton<IValidator<UpdateSaleCommand>, UpdateSaleCommandValidation>();
+        services.AddSingleton<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
     }
 
     private static void AddRepositoriesDependencyInjection(IServiceCollection services)
@@ -48,6 +52,8 @@ public static class DependencyInjection
     private static void AddServicesDependencyInjection(IServiceCollection services)
     {
         services.AddScoped<ISalesService, SalesService>();
+        services.AddScoped<IDomainEventService, DomainEventService>();
+        services.AddScoped<IMessageService, MessageService>();
     }
 
     private static void RabbitMQConfig(IServiceCollection services, IConfiguration configuration)
