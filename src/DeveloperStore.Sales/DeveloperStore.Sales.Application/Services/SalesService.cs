@@ -97,24 +97,8 @@ public class SalesService : ISalesService
                 Detail = Errors.NoItemsErrorDetail
             });
         }
-        var tasks = sale.Items.Select(async item =>
-        {
-            try
-            {
-                var product = await _productApi.GetProductAsync(item.ItemId);
 
-                _mapper.Map(product, item);
-
-                decimal discountedPrice = await CalculateDiscountedPriceAsync(item);
-                _logger.LogInformation($"Quantity: {item.Quantity}, Total Price: {discountedPrice:C}");
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogError($"Error for Quantity {item.Quantity}: {ex.Message}");
-            }
-        });
-
-        await Task.WhenAll(tasks);
+        await RetrievingProductData(sale);
 
         sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
 
@@ -144,23 +128,7 @@ public class SalesService : ISalesService
             });
         }
 
-        var tasks = sale.Items.Select(async item =>
-        {
-            try
-            {
-                var product = await _productApi.GetProductAsync(item.ItemId);
-
-                _mapper.Map(product, item);
-
-                decimal discountedPrice = await CalculateDiscountedPriceAsync(item);
-                _logger.LogInformation($"Quantity: {item.Quantity}, Total Price: {discountedPrice:C}");
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogError($"Error for Quantity {item.Quantity}: {ex.Message}");
-            }
-        });
-        await Task.WhenAll(tasks);
+        await RetrievingProductData(sale);
 
         sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
 
@@ -199,6 +167,28 @@ public class SalesService : ISalesService
         await _salesRepository.UpdateAsync(sale);
 
         return "Sale successfully deleted";
+    }
+
+    private async Task RetrievingProductData(Sale sale)
+    {
+
+        var tasks = sale.Items.Select(async item =>
+        {
+            try
+            {
+                var product = await _productApi.GetProductAsync(item.ItemId);
+
+                _mapper.Map(product, item);
+
+                decimal discountedPrice = await CalculateDiscountedPriceAsync(item);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError($"Error for Quantity {item.Quantity}: {ex.Message}");
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
     private Task<decimal> CalculateDiscountedPriceAsync(Item item)
