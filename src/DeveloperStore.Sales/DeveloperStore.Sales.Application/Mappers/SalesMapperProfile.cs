@@ -53,6 +53,7 @@ public class SalesMapperProfile : Profile
             .ReverseMap();
 
         CreateMap<UpdateProductRequest, Item>(MemberList.Destination)
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
             .ReverseMap();
