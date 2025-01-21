@@ -32,7 +32,7 @@ public class SalesService : ISalesService
         _mapper = mapper;
     }
 
-    public async Task<List<SalesModel>> GetSalesAsync(Dictionary<string, string> filters)
+    public async Task<(List<SalesModel> sales, int totalItems)> GetSalesAsync(Dictionary<string, string> filters)
     {
         filters.TryGetValue(Constants.Filter.PAGE_NUMBER_KEY, out string? pageNumberValue);
         filters.TryGetValue(Constants.Filter.PAGE_SIZE_KEY, out string? pageSizeValue);
@@ -62,7 +62,7 @@ public class SalesService : ISalesService
 
         await Task.WhenAll(saleTasks);
 
-        return salesList;
+        return (salesList, totalamount);
     }
 
     public async Task<SalesModel> GetSaleByIdAsync(int id)
@@ -118,17 +118,13 @@ public class SalesService : ISalesService
 
     public async Task<SalesModel> UpdateSaleAsync(int id, Sale sale)
     {
-        var existingSale = await _salesRepository.GetSaleByIdAsync(id);
-
-        if (existingSale == null)
-        {
+        var existingSale = await _salesRepository.GetSaleByIdAsync(id) ??
             throw new BusinessException(new ErrorResponse()
             {
                 Type = Errors.ResourceNotFoundType,
                 Error = Errors.SaleNotFoundMessage,
                 Detail = string.Format(Errors.SaleNotFoundDetail, id)
             });
-        }
 
         await RetrievingProductData(sale);
 
@@ -136,7 +132,7 @@ public class SalesService : ISalesService
 
         existingSale.SalesDate = sale.SalesDate.ToUniversalTime();
         existingSale.CustomerId = sale.CustomerId;
-        existingSale.Branch = sale.Branch;
+        existingSale.Branch = !string.IsNullOrWhiteSpace(sale.Branch) ? sale.Branch : existingSale.Branch;
         existingSale.Items = sale.Items;
         existingSale.TotalAmount = sale.TotalAmount;
         existingSale.IsCancelled = sale.IsCancelled;
@@ -145,6 +141,7 @@ public class SalesService : ISalesService
 
         var result = _mapper.Map<SalesModel>(existingSale);
 
+        await FulfillProductData(result, string.Empty);
         await FulfillCustomerData(result);
 
         return result;
@@ -182,7 +179,7 @@ public class SalesService : ISalesService
 
                 _mapper.Map(product, item);
 
-                decimal discountedPrice = await CalculateDiscountedPriceAsync(item);
+                var discountedPrice = await CalculateDiscountedPriceAsync(item);
             }
             catch (InvalidOperationException ex)
             {
@@ -209,11 +206,11 @@ public class SalesService : ISalesService
 
             if (IsDiscountApplicable(item.Quantity))
             {
-                decimal discount = GetDiscountRate(item.Quantity);
+                var discount = GetDiscountRate(item.Quantity);
                 item.Discount = discount;
             }
 
-            decimal totalPrice = item.Quantity * item.UnitPrice;
+            var totalPrice = item.Quantity * item.UnitPrice;
             item.TotalAmount = Decimal.Round(totalPrice - (totalPrice * item.Discount), 2);
 
             return item.TotalAmount;
@@ -251,14 +248,9 @@ public class SalesService : ISalesService
 
     private void ProcessProduct(ProductModel saleProduct, Product product, string action)
     {
-        if (product is null)
-        {
-            return;
-        }
-
         _mapper.Map(product, saleProduct);
 
-        if (!string.IsNullOrWhiteSpace(action) && action == "creating")
+        if (!string.IsNullOrWhiteSpace(action) && action.Equals("creating", StringComparison.InvariantCultureIgnoreCase))
         {
             saleProduct.UnitPrice = product.Price;
         }
@@ -292,7 +284,7 @@ public class SalesService : ISalesService
     {
         var customer = await _customerApi.GetCustomerAsync(sale.Customer.Id);
 
-        if(customer is null)
+        if (customer is null)
         {
             throw new BusinessException(new ErrorResponse()
             {

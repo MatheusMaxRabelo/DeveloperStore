@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"customerId\" : 9,\r\n    \"branch\" : \"Sao Benedito\",\r\n    \"products\": [\r\n        {\r\n            \"productId\": 199,\r\n            \"quantity\" : 12\r\n        },\r\n                {\r\n            \"productId\": 2,\r\n            \"quantity\" : 4\r\n        },\r\n                {\r\n            \"productId\": 3,\r\n            \"quantity\" : 15\r\n        },\r\n                {\r\n            \"productId\": 4,\r\n            \"quantity\" : 12\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"customerId\" : 9,\r\n    \"branch\" : \"Sao Benedito\",\r\n    \"products\": [\r\n        {\r\n            \"productId\": 9,\r\n            \"quantity\" : 12\r\n        },\r\n                {\r\n            \"productId\": 2,\r\n            \"quantity\" : 4\r\n        },\r\n                {\r\n            \"productId\": 3,\r\n            \"quantity\" : 15\r\n        },\r\n                {\r\n            \"productId\": 4,\r\n            \"quantity\" : 12\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
