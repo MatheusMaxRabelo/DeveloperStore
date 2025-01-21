@@ -16,6 +16,7 @@ services:
     image: postgres:latest
     volumes:
       - DeveloperStore:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     restart: always
     environment:
       POSTGRES_PASSWORD: P0st@123!pr0

@@ -111,6 +111,8 @@ public class SalesService : ISalesService
 
         await _salesRepository.AddAsync(sale);
 
+        result.Id = sale.Id;
+
         return result;
     }
 
