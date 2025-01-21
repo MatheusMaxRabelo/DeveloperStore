@@ -180,7 +180,7 @@ public class SalesService : ISalesService
         return result;
     }
 
-    public async Task DeleteSaleAsync(int id)
+    public async Task<string> DeleteSaleAsync(int id)
     {
         var sale = await _salesRepository.GetSaleByIdAsync(id);
 
@@ -194,7 +194,11 @@ public class SalesService : ISalesService
             });
         }
 
-        await _salesRepository.DeleteAsync(id);
+        sale.IsCancelled = true;
+        sale.SalesDate = sale.SalesDate.ToUniversalTime();
+        await _salesRepository.UpdateAsync(sale);
+
+        return "Sale successfully deleted";
     }
 
     private Task<decimal> CalculateDiscountedPriceAsync(Item item)
