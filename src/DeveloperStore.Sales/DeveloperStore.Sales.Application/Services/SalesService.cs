@@ -100,7 +100,7 @@ public class SalesService : ISalesService
 
         await RetrievingProductData(sale);
 
-        sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
+        sale.TotalAmount = sale.Items.Where(x => !x.IsCancelled).Sum(x => x.TotalAmount);
 
         var result = _mapper.Map<SalesModel>(sale);
 
@@ -128,7 +128,7 @@ public class SalesService : ISalesService
 
         await RetrievingProductData(sale);
 
-        sale.TotalAmount = sale.Items.Sum(x => x.TotalAmount);
+        sale.TotalAmount = sale.Items.Where(x => !x.IsCancelled).Sum(x => x.TotalAmount);
 
         existingSale.SalesDate = sale.SalesDate.ToUniversalTime();
         existingSale.CustomerId = sale.CustomerId;
